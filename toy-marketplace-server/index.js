@@ -24,6 +24,24 @@ async function run() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
     await client.connect();
+
+
+    const categoryDataCollection = client.db('toyMarketplace').collection('categoryData');
+
+    app.get('/category', async(req, res)=>{
+        const cursor = categoryDataCollection.find();
+        const result = await cursor.toArray();
+        res.send(result);
+    })
+
+    app.get('/category/:title', async(req, res)=>{
+        const title= req.params.title;
+        const query = {subCategoryName : title}
+        const result = await categoryDataCollection.find(query).toArray();
+        res.send(result)
+    })
+
+
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
