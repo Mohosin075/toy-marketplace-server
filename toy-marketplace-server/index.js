@@ -9,7 +9,7 @@ const port = process.env.PORT || 5000;
 // middleware
 
 app.use(cors())
-app.use(express())
+app.use(express.json())
 
 app.get('/', (req, res)=>{
     res.send('toy server is running......')
@@ -34,24 +34,33 @@ async function run() {
 
 
     const categoryDataCollection = client.db('toyMarketplace').collection('categoryData');
-
-    app.get('/category', async(req, res)=>{
-        const cursor = categoryDataCollection.find();
+// find all  data
+    app.get('/allToys', async(req, res)=>{
+        const cursor = categoryDataCollection.find().limit(20);
         const result = await cursor.toArray();
         res.send(result);
     })
-
+// find category title base  data
     app.get('/category/:title', async(req, res)=>{
         const title= req.params.title;
         const query = {category : title}
-        const result = await categoryDataCollection.find(query).toArray();
+        const result = await categoryDataCollection.find(query).limit(4).toArray();
         res.send(result)
     })
-
+// show details data get
     app.get('/shopDetails/:id', async(req, res)=>{
         const id = req.params.id;
         const query = {_id  : new ObjectId(id)};
         const result = await categoryDataCollection.findOne(query);
+        res.send(result)
+    })
+
+
+    //  new data post
+
+    app.post('/addAToy' , async(req, res)=>{
+        const body = req.body
+        const result = await categoryDataCollection.insertOne(body)
         res.send(result)
     })
 
