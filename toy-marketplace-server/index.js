@@ -55,6 +55,14 @@ async function run() {
         res.send(result)
     })
 
+    // find my toys data
+
+    app.get('/myToys/:email', async(req, res)=>{
+      const email = req.params.email;
+      const query = {email : email}
+      const result = await categoryDataCollection.find(query).toArray();
+      res.send(result)
+    })
 
     //  new data post
 
