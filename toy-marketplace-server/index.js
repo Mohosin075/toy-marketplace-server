@@ -15,6 +15,9 @@ app.get('/', (req, res)=>{
     res.send('toy server is running......')
 })
 
+app.get('/data', (req, res)=>{
+  res.send({data : 'hello data'})
+})
 
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.fudiykq.mongodb.net/?retryWrites=true&w=majority`;
 
@@ -30,7 +33,7 @@ const client = new MongoClient(uri, {
 async function run() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
-    await client.connect();
+    client.connect();
 
 
     const categoryDataCollection = client.db('toyMarketplace').collection('categoryData');
@@ -61,6 +64,20 @@ async function run() {
       const email = req.params.email;
       const query = {email : email}
       const result = await categoryDataCollection.find(query).toArray();
+      res.send(result)
+    })
+    // shor by assending
+    app.get('/myToysAssending/:email', async(req, res)=>{
+      const email = req.params.email;
+      const query = {email : email}
+      const result = await categoryDataCollection.find(query).sort({ price: 1 }).toArray();
+      res.send(result)
+    })
+    // shor by dissending
+    app.get('/myToysDssending/:email', async(req, res)=>{
+      const email = req.params.email;
+      const query = {email : email}
+      const result = await categoryDataCollection.find(query).sort({ price: -1 }).toArray();
       res.send(result)
     })
 
