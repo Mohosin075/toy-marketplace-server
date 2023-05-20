@@ -64,6 +64,24 @@ async function run() {
       res.send(result)
     })
 
+        // search by name
+
+        const indexKeys = {name : 1}
+        const indexOptions = {search  : "nameSearch"}
+    
+        const result = await categoryDataCollection.createIndex(indexKeys , indexOptions)
+    
+        app.get("/searchByName/:text", async (req, res) => {
+          const text = req.params.text;
+          const result = await categoryDataCollection
+            .find({
+              $or: [
+                { name: { $regex: text, $options: "i" }}
+              ],
+            })
+            .toArray();
+          res.send(result);
+        });
     //  new data post
 
     app.post('/addAToy' , async(req, res)=>{
@@ -82,14 +100,6 @@ async function run() {
       res.send(result)
     })
 
-    // update toy found
-
-    app.get('/updateToy/:id', async(req, res)=>{
-      const id = req.params.id
-      const query = {_id : new ObjectId(id)};
-      const result = await categoryDataCollection.findOne(query);
-      res.send(result)
-    })
 
 
     // Send a ping to confirm a successful connection
