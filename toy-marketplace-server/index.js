@@ -81,6 +81,31 @@ async function run() {
       res.send(result)
     })
 
+    // update data get
+    app.get('/updateData/:id', async(req, res)=>{
+      const id = req.params.id
+      const query = {_id : new ObjectId(id)};
+      const result = await categoryDataCollection.findOne(query);
+      res.send(result)
+    })
+
+    // updadte toy
+
+    app.patch('/updateToy/:id', async(req, res)=>{
+      const id = req.params.id
+      const body = req.body
+      const filter = {_id : new ObjectId(id)}
+      const updateDoc = {
+        $set: {
+          price: body.price,
+          quentity: body.quentity,
+          details: body.details
+        },
+      };
+      const result = await categoryDataCollection.updateOne(filter, updateDoc)
+      res.send(result)
+    })
+
         // search by name
 
         const indexKeys = {name : 1}
